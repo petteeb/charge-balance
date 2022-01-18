@@ -1,5 +1,4 @@
 
-<<<<<<< HEAD
 #include <algorithm>
 
 void MChargeExercise()
@@ -95,5 +94,3 @@ void MChargeExercise()
   c1->Print("balance.png");
 }
 
-=======
->>>>>>> 9432b7df395d66db60e0b1d37df2eb1d32b0e371
