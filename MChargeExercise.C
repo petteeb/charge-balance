@@ -44,11 +44,12 @@ void MChargeExercise()
   //Create new tree
   TTree* t2 = new TTree("t2", "Data Collection");
   //The Branches
-  
-  t2->Branch("Charge", charge, "charge[1000]/I");
+  t2->Branch("mult", &mult);
+  t2->Branch("eta", eta, "eta[mult]/D");  
+  t2->Branch("charge", charge, "charge[mult]/I");
   //t2->Branch("Charge2", &q_2);
-  t2->Branch("Mult", &mult);
-  t2->Branch("ETA", eta, "eta[1000]/D");
+
+
   //t2->Branch("ETA2", &eta_2);
   //Setting seed to 0 randomizes the seed
   gRandom->SetSeed(0);
