@@ -19,10 +19,11 @@ void ReadCharge()
   Option_t* option="";
   
   
-  TFile* f = new TFile("my_tree.root");
+  TFile* f = new  TFile("my_tree.root");
+  //TFile* f =  TFile::Open("my_tree.root","read");
   TTree* t2 = (TTree*)f->Get("t2");
   TCanvas* c1 = new TCanvas("c1", "");
-  TProfile* h1 = new TProfile("h1", "Delta Eta", 100, -5, 5);
+  TProfile* h1 = new TProfile("h1", "Delta Eta", 150, -5, 5);
   //TProfile2D* h1 = new TProfile2D("h1","Charge and Eta(Dscp.)", nx, xlow, xup, ny, ylow, yup, option);
   //Set all of the branches up and the assigns them a new address. This address can be used to examine a specific entry after
   //calling GetEntry(). 
@@ -51,8 +52,10 @@ void ReadCharge()
 	  Double_t eta_1 = eta[z];
 	    for(int x = 1; x < mult-(z+1); x++)
 	    {
+	      Double_t eta_2 = eta[z+x];
+	      Int_t charge_2 = charge[z+x];
 	      //charge_1* charge[z+x]
-	      h1->Fill((eta_1-eta[z+x]),(charge_1 * charge[z+x]) );
+	      h1->Fill((eta_1-eta_2),(charge_1 * charge_2) );
 	    }
 	}
     }
@@ -60,6 +63,7 @@ void ReadCharge()
   e1->Print();
   q1->Print();
   m1->Print();
+  //f->Close();
   h1->Draw();
   c1->Print("hist.png");
   ///t2->Draw("eta");
