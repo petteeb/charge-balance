@@ -8,25 +8,23 @@ void ReadCharge()
   Int_t mult = 1000;
   Double_t eta[500000];
   Int_t charge[500000];
-
-  //A bunch of stuff to initialized TProfile2D Which I am cancelling me no understand.
-  Int_t nx = 2;
-  Double_t xlow= -1;
-  Double_t xup = 1;
-  Int_t ny = 100;
-  Double_t ylow = -2.4;
-  Double_t yup = 2.4 ;
-  Option_t* option="";
   
+  double min_x;
+  double max_x;
+  double line;
+  ifstream text("bounds.txt");
+  text >> min_x >> max_x;
+  text.close();
   
-  TFile* f = new  TFile("my_tree.root");
-  //TFile* f =  TFile::Open("my_tree.root","read");
+  TProfile* h_q1q2_deta = new TProfile("h_q1q2_deta", "Charge1*Charge2_Delta_Eta", 150, min_x, max_x);
+  TProfile* h_q1_deta = new TProfile("h_q1_deta", "Charge_1_Delta_Eta", 150, min_x, max_x);
+  TProfile* h_q2_deta = new TProfile("h_q2_deta", "Charge_2_Delta_Eta", 150 , min_x, max_x);
+  TCanvas* c1 = new TCanvas("c1", "");  
+  //TFile* f = new  TFile("my_tree.root");
+  TFile* f =  TFile::Open("my_tree.root","read");  
   TTree* t2 = (TTree*)f->Get("t2");
-  TCanvas* c1 = new TCanvas("c1", "");
-  TProfile* h1 = new TProfile("h1", "Delta Eta", 150, -5, 5);
-  //TProfile2D* h1 = new TProfile2D("h1","Charge and Eta(Dscp.)", nx, xlow, xup, ny, ylow, yup, option);
-  //Set all of the branches up and the assigns them a new address. This address can be used to examine a specific entry after
-  //calling GetEntry(). 
+
+  
   TBranch* m1 = t2->GetBranch("mult");
   m1->SetAddress(&mult);
   
@@ -50,12 +48,15 @@ void ReadCharge()
 	{//Now every particle's charge is multiplied with every other particles charge. For each delta eta must also be recorded.
 	  Int_t charge_1 = charge[z];
 	  Double_t eta_1 = eta[z];
+	  
 	    for(int x = 1; x < mult-(z+1); x++)
 	    {
 	      Double_t eta_2 = eta[z+x];
 	      Int_t charge_2 = charge[z+x];
-	      //charge_1* charge[z+x]
-	      h1->Fill((eta_1-eta_2),(charge_1 * charge_2) );
+	      
+	      h_q1q2_deta->Fill((eta_1-eta_2),(charge_1 * charge_2) );
+	      h_q1_deta->Fill((eta_1-eta_2), charge_1);
+	      h_q2_deta->Fill((eta_1-eta_2), charge_2);
 	    }
 	}
     }
@@ -63,12 +64,21 @@ void ReadCharge()
   e1->Print();
   q1->Print();
   m1->Print();
-  //f->Close();
-  h1->Draw();
+  f->Close();
+  
+  h_q1q2_deta->Draw();
   c1->Print("hist.png");
-  ///t2->Draw("eta");
-  //t2->Print();
-  //c1->Print("histogram5000.png");
+  h_q1_deta->Draw();
+  c1->Print("1chist.png");
+  h_q2_deta->Draw();
+  c1->Print("2chist.png");
+  
+  TFile* fout =  TFile::Open("histogram.root", "recreate");
+  h_q1q2_deta->Write();
+  h_q1_deta->Write();
+  h_q2_deta->Write();
+  fout->Write();
+  fout->Close();
 
 }
 //

@@ -4,7 +4,7 @@
 void MChargeExercise()
 {
   // The two generated charges.
-  const int num_of = 100;//Number of sets of data
+  const int num_of = 1000;//Number of sets of data
   const int num_trk = 500;//Number of tracks/datapoints/etc?
   const int nbins = 100; //Bins for histogram
   const int MULT = 1000;
@@ -12,11 +12,7 @@ void MChargeExercise()
   int mult = MULT;
     
   Int_t q_1;
-  Int_t q_2;
-  
-  
-
-  
+  Int_t q_2; 
   
   double maximum_eta_1 = 2.4;
   double minimum_eta_1 = -maximum_eta_1;
@@ -28,6 +24,12 @@ void MChargeExercise()
   double x_min = minimum_eta_1 - 3* width;
   double x_max = maximum_eta_1 + 3*width;
 
+  //Write to file.
+  ofstream text("bounds.txt");
+  text << x_min;
+  text << "\n";
+  text << x_max;
+  text.close();
   //Gotta declare them here for the branches.
   
   Double_t eta_1;
@@ -40,7 +42,7 @@ void MChargeExercise()
   TProfile* h2 = new TProfile("h2", "Balance", nbins, x_min, x_max);
   TProfile* h3 = new TProfile("h3", "q_1", nbins, x_min, x_max);
   TProfile* h4 = new TProfile("h4", "q_2", nbins, x_min, x_max);
-
+  
   //Create new tree
   TTree* t2 = new TTree("t2", "Data Collection");
   //The Branches
